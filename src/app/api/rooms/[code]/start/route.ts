@@ -14,10 +14,15 @@ export async function POST(
       return NextResponse.json({ success: false, error: 'Room not found' }, { status: 404 });
     }
 
-    const players = room.participants.filter((p) => p.role === 'PLAYER');
-    if (players.length < 2) {
+    const redPlayers = room.participants.filter((p) => p.role === 'PLAYER' && p.team === 'RED' && p.ready);
+    const bluePlayers = room.participants.filter((p) => p.role === 'PLAYER' && p.team === 'BLUE' && p.ready);
+
+    if (redPlayers.length === 0 || bluePlayers.length === 0) {
       return NextResponse.json(
-        { success: false, error: 'Need at least 2 players to start battle!' },
+        {
+          success: false,
+          error: 'ยังเริ่มไม่ได้: ต้องมีนักสู้ทั้งทีมสีแดง (RED) และทีมสีน้ำเงิน (BLUE) ที่พร้อมลงสนามฝั่งละอย่างน้อย 1 คน!',
+        },
         { status: 400 }
       );
     }

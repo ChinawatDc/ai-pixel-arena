@@ -15,7 +15,20 @@ export async function POST(
     }
 
     const body = await req.json();
-    const sender = (body.sender || 'Anonymous Spectator').trim();
+    const passcode = (body.passcode || '').trim();
+
+    // Enforce VIP buff passcode 253600
+    if (passcode !== '253600') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: '⛔ สิทธิ์โยนบัพถูกล็อค: ต้องกรอกรหัสผ่าน VIP 253600 เท่านั้น (จำกัดสิทธิ์เฉพาะเจ้าของ)',
+        },
+        { status: 403 }
+      );
+    }
+
+    const sender = (body.sender || 'Arena VIP').trim();
     const team: Team = body.team === 'BLUE' ? 'BLUE' : 'RED';
     const item: 'HEART' | 'BANANA' | 'ENERGY_DRINK' | 'LIGHTNING' = body.item || 'HEART';
     const message = (body.message || '').trim().slice(0, 60);

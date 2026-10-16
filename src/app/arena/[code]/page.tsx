@@ -12,7 +12,8 @@ import { TrophyCertificateModal } from '@/components/TrophyCertificateModal';
 import { soundFx } from '@/lib/soundFx';
 import confetti from 'canvas-confetti';
 import Link from 'next/link';
-import { ArrowLeft, Share2, Volume2, VolumeX, Sparkles } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { ArrowLeft, Share2, Volume2, VolumeX, Sparkles, Eye, ShieldAlert } from 'lucide-react';
 
 function ArenaContent({
   params,
@@ -20,10 +21,13 @@ function ArenaContent({
   params: Promise<{ code: string }>;
 }) {
   const { code } = use(params);
+  const searchParams = useSearchParams();
+  const isSpectatorQuery = searchParams.get('view') === 'spectator';
 
   const [room, setRoom] = useState<Room | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isHost, setIsHost] = useState(false);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [fighterModalOpen, setFighterModalOpen] = useState(false);
   const [trophyModalOpen, setTrophyModalOpen] = useState(false);
@@ -32,6 +36,25 @@ function ArenaContent({
     name: 'Champion Fighter',
   });
   const [muted, setMuted] = useState(false);
+
+  // Host detection: check if view is explicitly spectator, or if stored host token matches
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (isSpectatorQuery) {
+        setIsHost(false);
+        return;
+      }
+      const storedToken = localStorage.getItem(`arena_host_${code.toUpperCase()}`);
+      if (storedToken && room?.hostToken && storedToken === room.hostToken) {
+        setIsHost(true);
+      } else if (storedToken && !room?.hostToken) {
+        setIsHost(true);
+      } else {
+        // Default to Spectator if not room creator
+        setIsHost(false);
+      }
+    }
+  }, [code, room?.hostToken, isSpectatorQuery]);
 
   // Poll room updates
   const fetchRoom = useCallback(async () => {
@@ -85,9 +108,12 @@ function ArenaContent({
       const data = await res.json();
       if (data.success) {
         setRoom(data.room);
+      } else {
+        alert(data.error || 'Failed to start battle');
       }
     } catch (err) {
       console.error(err);
+      alert('Error connecting to arena server');
     }
   };
 
@@ -102,23 +128,98 @@ function ArenaContent({
       const data = await res.json();
       if (data.success) {
         setRoom(data.room);
+      } else {
+        alert(data.error || 'Failed to add fighter');
       }
     } catch (err) {
       console.error(err);
     }
   };
 
-  // Spectator: Cheer with Crop / Snack
-  const handleCheer = async (team: Team, item: string, message: string) => {
+  // Spectator: Cheer with Crop / Snack with passcode
+  const handleCheer = async (team: Team, item: string, message: string, passcode?: string) => {
     try {
-      await fetch(`/api/rooms/${code}/cheer`, {
+      const res = await fetch(`/api/rooms/${code}/cheer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ team, item, message }),
+        body: JSON.stringify({ team, item, message, passcode }),
       });
+      const data = await res.json();
+      if (!data.success) {
+        alert(data.error || 'Failed to send cheer buff');
+        return;
+      }
       fetchRoom();
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  // Sync Match Finish to Server
+  const handleMatchFinish = async (
+    winnerTeam: 'RED' | 'BLUE',
+    winnerName: string,
+    roundWins: { RED: number; BLUE: number }
+  ) => {
+    setWinnerDetails({ team: winnerTeam, name: winnerName });
+    try {
+      const res = await fetch(`/api/rooms/${code}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: 'FINISHED',
+          winner: winnerTeam,
+          winnerName,
+          roundWins,
+          logText: `🏆 MATCH OVER! ${winnerName} (Team ${winnerTeam}) is crowned CHAMPION!`,
+          logType: 'KO',
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.room) {
+        setRoom(data.room);
+      }
+    } catch (err) {
+      console.error('Failed to sync match finish:', err);
+    }
+  };
+
+  // Sync Round Finish to Server
+  const handleRoundFinish = async (
+    roundNum: number,
+    winnerTeam: 'RED' | 'BLUE',
+    roundWins: { RED: number; BLUE: number }
+  ) => {
+    try {
+      await fetch(`/api/rooms/${code}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          roundWins,
+          currentRound: roundNum + 1,
+          logText: `🔔 ROUND ${roundNum} OVER: Team ${winnerTeam} wins the round!`,
+          logType: 'KO',
+        }),
+      });
+    } catch (err) {
+      console.error('Failed to sync round win:', err);
+    }
+  };
+
+  // Host: Reset Match
+  const handleReset = async () => {
+    try {
+      const res = await fetch(`/api/rooms/${code}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reset: true }),
+      });
+      const data = await res.json();
+      if (data.success && data.room) {
+        setRoom(data.room);
+      }
+    } catch (err) {
+      console.error('Failed to reset match:', err);
     }
   };
 
@@ -242,18 +343,28 @@ function ArenaContent({
         </div>
       </div>
 
+      {/* Spectator Mode Banner */}
+      {!isHost && (
+        <div className="max-w-4xl mx-auto mb-3 sd-parchment p-2.5 rounded border-2 border-[#bba36d] flex flex-wrap items-center justify-between text-xs text-[#5c3a21] shadow-xs">
+          <div className="flex items-center gap-2 font-bold">
+            <Eye className="w-4 h-4 text-emerald-700" />
+            <span>
+              <b>👀 โหมดผู้ชม (Spectator Live View):</b> คุณกำลังรับชมการประลอง AI แบบสดๆ (มุมมองดูอย่างเดียว ทำอะไรไม่ได้)
+            </span>
+          </div>
+          <span className="text-[10px] bg-[#3a2010] text-[#ffd7a8] px-2.5 py-0.5 rounded font-mono font-bold">
+            READ-ONLY SPECTATOR
+          </span>
+        </div>
+      )}
+
       {/* Main Arena Component */}
       <div className="relative">
         {room.gameMode === 'BOXING' ? (
           <RealtimeCombatArena
             room={room}
-            onMatchFinish={(winnerTeam, winnerName) => {
-              room.status = 'FINISHED';
-              room.state.winner = winnerTeam;
-              room.state.winnerName = winnerName;
-              setWinnerDetails({ team: winnerTeam, name: winnerName });
-              setRoom({ ...room });
-            }}
+            onMatchFinish={handleMatchFinish}
+            onRoundFinish={handleRoundFinish}
             onOpenTrophyModal={(winnerTeam, winnerName) => {
               setWinnerDetails({ team: winnerTeam, name: winnerName });
               setTrophyModalOpen(true);
@@ -263,31 +374,34 @@ function ArenaContent({
           <StardewMathArena
             room={room}
             onManualAnswer={handleManualMathAnswer}
+            isSpectator={!isHost}
           />
         )}
       </div>
 
-      {/* Host Controls */}
-      <StardewHostControls
-        room={room}
-        onStart={handleStartMatch}
-        onOpenAddFighter={() => setFighterModalOpen(true)}
-        onOpenInvite={() => setInviteModalOpen(true)}
-        onOpenTrophyModal={() => setTrophyModalOpen(true)}
-        onReset={() => {
-          room.status = 'WAITING';
-          room.state.currentRound = 1;
-          room.state.roundWins = { RED: 0, BLUE: 0 };
-          room.participants.forEach((p) => {
-            p.hp = 100;
-            p.status = 'IDLE';
-            p.score = 0;
-            p.roundWins = 0;
-            p.superMeter = 0;
-          });
-          setRoom({ ...room });
-        }}
-      />
+      {/* Host Controls (Only visible to Host, completely hidden for Spectators) */}
+      {isHost ? (
+        <StardewHostControls
+          room={room}
+          onStart={handleStartMatch}
+          onOpenAddFighter={() => setFighterModalOpen(true)}
+          onOpenInvite={() => setInviteModalOpen(true)}
+          onOpenTrophyModal={() => setTrophyModalOpen(true)}
+          onReset={handleReset}
+        />
+      ) : (
+        room.status === 'FINISHED' && (
+          <div className="w-full max-w-4xl mx-auto my-3 flex justify-center">
+            <button
+              onClick={() => setTrophyModalOpen(true)}
+              className="sd-button-green px-6 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider flex items-center gap-2 text-white shadow-lg animate-pulse hover:scale-105"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              ดูประกาศเกียรติยศ & ถ้วยรางวัลแชมเปียน (Claim Trophy & Certificate PNG)
+            </button>
+          </div>
+        )
+      )}
 
       {/* Spectator Cheer Bar (Toss Fruits & Coffee) */}
       <StardewCheerBar

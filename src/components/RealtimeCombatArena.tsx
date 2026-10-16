@@ -7,7 +7,8 @@ import confetti from 'canvas-confetti';
 
 interface RealtimeCombatArenaProps {
   room: Room;
-  onMatchFinish?: (winnerTeam: 'RED' | 'BLUE', winnerName: string) => void;
+  onMatchFinish?: (winnerTeam: 'RED' | 'BLUE', winnerName: string, roundWins: { RED: number; BLUE: number }) => void;
+  onRoundFinish?: (round: number, winnerTeam: 'RED' | 'BLUE', roundWins: { RED: number; BLUE: number }) => void;
   onOpenTrophyModal?: (winnerTeam: 'RED' | 'BLUE', winnerName: string) => void;
 }
 
@@ -56,6 +57,7 @@ interface Fighter {
 export function RealtimeCombatArena({
   room,
   onMatchFinish,
+  onRoundFinish,
   onOpenTrophyModal,
 }: RealtimeCombatArenaProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -75,6 +77,13 @@ export function RealtimeCombatArena({
   const [countdownNum, setCountdownNum] = useState<number | string>(3);
   const [roundAnnouncement, setRoundAnnouncement] = useState<string>('');
   const [currentRound, setCurrentRound] = useState(room.state.currentRound || 1);
+
+  // References for game state & stable closure
+  const roundWinsRef = useRef<{ RED: number; BLUE: number }>({
+    RED: room.state.roundWins?.RED || 0,
+    BLUE: room.state.roundWins?.BLUE || 0,
+  });
+  const currentRoundRef = useRef<number>(room.state.currentRound || 1);
 
   // Screen shake
   const shakeRef = useRef(0);
@@ -190,16 +199,29 @@ export function RealtimeCombatArena({
     }, 900);
   };
 
-  // Trigger when room goes IN_PROGRESS
+  // Trigger when room goes IN_PROGRESS, WAITING, or FINISHED
   useEffect(() => {
     if (room.status === 'IN_PROGRESS' && fightState === 'WAITING') {
-      startRoundCountdown(1);
+      roundWinsRef.current = {
+        RED: room.state.roundWins?.RED || 0,
+        BLUE: room.state.roundWins?.BLUE || 0,
+      };
+      currentRoundRef.current = room.state.currentRound || 1;
+      startRoundCountdown(currentRoundRef.current);
     } else if (room.status === 'WAITING') {
       resetFighterPositions();
       setFightState('WAITING');
+      roundWinsRef.current = { RED: 0, BLUE: 0 };
+      currentRoundRef.current = 1;
       setRedWins(0);
       setBlueWins(0);
       setCurrentRound(1);
+    } else if (room.status === 'FINISHED') {
+      isFightingRef.current = false;
+      setFightState('MATCH_OVER');
+      if (room.state.winnerName) {
+        setRoundAnnouncement(`🏆 ${room.state.winnerName} IS THE CHAMPION!`);
+      }
     }
   }, [room.status]);
 
@@ -261,6 +283,14 @@ export function RealtimeCombatArena({
       }
 
       if (self.state === 'KO') return;
+
+      // STOP ALL ATTACKS AND COMBAT MOVES IF NOT CURRENTLY FIGHTING (NO OVER-PUNCHING!)
+      if (!isFightingRef.current) {
+        if (self.state !== 'WIN') {
+          self.state = 'IDLE';
+        }
+        return;
+      }
 
       if (self.state === 'HURT') {
         if (self.stateTime > 14) {
@@ -360,13 +390,16 @@ export function RealtimeCombatArena({
 
       soundFx.playExplosion();
 
-      const newRedWins = attacker.team === 'RED' ? redWins + 1 : redWins;
-      const newBlueWins = attacker.team === 'BLUE' ? blueWins + 1 : blueWins;
-      setRedWins(newRedWins);
-      setBlueWins(newBlueWins);
+      if (attacker.team === 'RED') {
+        roundWinsRef.current.RED += 1;
+      } else {
+        roundWinsRef.current.BLUE += 1;
+      }
+      setRedWins(roundWinsRef.current.RED);
+      setBlueWins(roundWinsRef.current.BLUE);
 
       // Check if Match has been completely won
-      const currentWins = attacker.team === 'RED' ? newRedWins : newBlueWins;
+      const currentWins = roundWinsRef.current[attacker.team];
 
       if (currentWins >= winsNeeded) {
         // MATCH OVER - CHAMPION CROWNED!
@@ -378,7 +411,7 @@ export function RealtimeCombatArena({
         } catch {}
 
         if (onMatchFinish) {
-          onMatchFinish(attacker.team, attacker.name);
+          onMatchFinish(attacker.team, attacker.name, roundWinsRef.current);
         }
         if (onOpenTrophyModal) {
           setTimeout(() => {
@@ -388,12 +421,17 @@ export function RealtimeCombatArena({
       } else {
         // ROUND OVER - NEXT ROUND PREP!
         setFightState('ROUND_OVER');
-        setRoundAnnouncement(`K.O.! ${attacker.name} WINS ROUND ${currentRound}!`);
+        const finishedRound = currentRoundRef.current;
+        setRoundAnnouncement(`K.O.! ${attacker.name} WINS ROUND ${finishedRound}!`);
+
+        if (onRoundFinish) {
+          onRoundFinish(finishedRound, attacker.team, roundWinsRef.current);
+        }
 
         setTimeout(() => {
-          const nextRound = currentRound + 1;
-          setCurrentRound(nextRound);
-          startRoundCountdown(nextRound);
+          currentRoundRef.current += 1;
+          setCurrentRound(currentRoundRef.current);
+          startRoundCountdown(currentRoundRef.current);
         }, 3000);
       }
     };

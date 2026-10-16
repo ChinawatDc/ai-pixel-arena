@@ -31,6 +31,9 @@ export default function LobbyPage() {
       });
       const data = await res.json();
       if (data.success && data.room) {
+        if (typeof window !== 'undefined' && data.room.hostToken) {
+          localStorage.setItem(`arena_host_${data.room.code}`, data.room.hostToken);
+        }
         router.push(`/arena/${data.room.code}`);
       }
     } catch {

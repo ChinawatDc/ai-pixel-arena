@@ -81,6 +81,7 @@ export interface Room {
   participants: Participant[];
   state: GameState;
   logs: GameLog[];
+  hostToken?: string;
   createdAt: number;
   updatedAt: number;
 }

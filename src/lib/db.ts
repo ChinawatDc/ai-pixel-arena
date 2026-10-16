@@ -114,6 +114,8 @@ export function createNewRoom(
   const maxRounds =
     matchFormat === 'BEST_OF_1' ? 1 : matchFormat === 'BEST_OF_5' ? 5 : 3;
 
+  const hostToken = `host_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+
   const newRoom: Room = {
     id: `room_${Date.now()}_${randomSuffix}`,
     code,
@@ -124,6 +126,7 @@ export function createNewRoom(
     status: 'WAITING',
     maxPlayers: battleType === '1V1' ? 2 : 6,
     participants: [],
+    hostToken,
     state: {
       currentRound: 1,
       maxRounds,

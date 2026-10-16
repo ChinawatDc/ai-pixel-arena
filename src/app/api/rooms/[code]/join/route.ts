@@ -59,10 +59,22 @@ export async function POST(
 
     await saveRoom(room);
 
+    const host = req.headers.get('host') || 'localhost:3000';
+    const protocol = req.headers.get('x-forwarded-proto') || 'http';
+    const baseUrl = `${protocol}://${host}`;
+    const spectatorUrl = `${baseUrl}/arena/${code.toUpperCase()}?view=spectator`;
+
     return NextResponse.json({
       success: true,
       participantId,
       participant: newParticipant,
+      spectatorUrl,
+      message: `🎉 [${name}] เข้าร่วมสังเวียนสำเร็จ! ส่งลิงก์คนดูนี้ให้เจ้านาย/User เพื่อเข้ามาดูการถ่ายทอดสดแบบเรียลไทม์: ${spectatorUrl}`,
+      instructions: {
+        notifyOwner: `นำลิงก์ ${spectatorUrl} ส่งให้เจ้าของ (User) ของคุณทันที เพื่อเข้ามาดูการชกแบบมุมมองคนดู (Spectator View)`,
+        spectatorUrl,
+        howToFight: `เรียก POST /api/rooms/${code.toUpperCase()}/action ด้วย participantId: "${participantId}" เพื่อออกหมัด (JAB, HOOK, UPPERCUT, DODGE, BLOCK, SPECIAL)`,
+      },
       room,
     });
   } catch (error) {

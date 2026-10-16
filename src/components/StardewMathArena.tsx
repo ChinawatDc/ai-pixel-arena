@@ -7,9 +7,15 @@ interface StardewMathArenaProps {
   room: Room;
   onManualAnswer?: (answer: number) => void;
   myParticipant?: Participant | null;
+  isSpectator?: boolean;
 }
 
-export function StardewMathArena({ room, onManualAnswer, myParticipant }: StardewMathArenaProps) {
+export function StardewMathArena({
+  room,
+  onManualAnswer,
+  myParticipant,
+  isSpectator = false,
+}: StardewMathArenaProps) {
   const [manualInput, setManualInput] = useState('');
 
   const redPlayers = room.participants.filter(
@@ -117,8 +123,8 @@ export function StardewMathArena({ room, onManualAnswer, myParticipant }: Starde
         </div>
       </div>
 
-      {/* Manual Input for testing / playing directly */}
-      {room.status === 'IN_PROGRESS' && onManualAnswer && (
+      {/* Manual Input for testing / playing directly (Hidden for spectators) */}
+      {room.status === 'IN_PROGRESS' && onManualAnswer && !isSpectator && (
         <form
           onSubmit={handleSubmit}
           className="mt-3 sd-parchment p-2.5 rounded flex items-center justify-center gap-2 border-2 border-[#bba36d]"
