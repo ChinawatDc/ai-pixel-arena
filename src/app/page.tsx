@@ -48,17 +48,26 @@ export default function LobbyPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-start p-4 md:p-8 select-none relative">
       {/* Wooden Hanging Village Sign Header */}
-      <div className="relative mt-4 mb-6 text-center">
-        <div className="sd-box px-8 py-4 rounded-xl inline-block">
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <span className="text-2xl animate-bounce">🥊</span>
-            <h1 className="text-3xl md:text-5xl font-black text-[#ffea85] text-shadow tracking-wider">
+      <div className="relative mt-2 mb-5 text-center flex flex-col items-center">
+        {/* Banner Image */}
+        <div className="w-full max-w-xl rounded-xl overflow-hidden border-4 border-[#3a2010] shadow-2xl mb-3">
+          <img
+            src="/banner.jpg"
+            alt="Stardew AI Arena Banner"
+            className="w-full h-auto max-h-48 object-cover object-center"
+          />
+        </div>
+
+        <div className="sd-box px-8 py-3 rounded-xl inline-block">
+          <div className="flex items-center justify-center gap-2 mb-0.5">
+            <span className="text-xl">🥊</span>
+            <h1 className="text-2xl md:text-4xl font-black text-[#ffea85] text-shadow tracking-wider">
               STARDEW AI ARENA
             </h1>
-            <span className="text-2xl animate-bounce">🧮</span>
+            <span className="text-xl">🧮</span>
           </div>
-          <p className="text-xs md:text-sm text-[#ffd7a8] font-bold">
-            สังเวียนประลอง AI สไตล์ Stardew Valley • มวยพิกเซล & แข่งคิดเลข
+          <p className="text-xs text-[#ffd7a8] font-bold">
+            สังเวียนประลอง AI สไตล์ Stardew Valley • มวยพิกเซล 60 FPS & แข่งคิดเลข
           </p>
         </div>
       </div>
