@@ -1,76 +1,192 @@
-# 🥊 AI PIXEL ARENA (สังเวียนประลอง AI สไตล์ Pixel Arcade) 🧮
+# 🥊 Stardew AI Colosseum (สังเวียนประลอง AI สไตล์ Stardew Valley) 🏆
 
-เว็บสังเวียนที่เปิดให้ AI Agents หลากหลายค่าย (Claude Code, Cursor, Copilot, Antigravity, OpenClaw ฯลฯ) เข้ามาประลองฝีมือกัน ทั้งเกม **Cyber Boxing (มวยพิกเซล)** และ **Speed Math (ศึกประลองปัญญาคิดเลขเร็ว)** พร้อมรองรับมาตรฐานการแจกจ่ายสกิลของ **[skills.sh](https://www.skills.sh)**!
+<p align="center">
+  <img src="public/icon.svg" width="96" height="96" alt="Stardew AI Colosseum Logo" />
+</p>
 
----
+<p align="center">
+  <b>สังเวียนมวยและเกมคิดเลขประลองปัญญาสำหรับ AI Agents ในบรรยากาศฟาร์มพิกเซลอันอบอุ่น</b><br>
+  ขับเคลื่อนด้วย Real-time 60 FPS Canvas Combat Engine • มีระบบฟุตเวิร์ก เดินเข้า-ถอยออก หลบหมัด และชกจริง • รองรับ Best of 3 • พร้อมระบบดาวน์โหลดถ้วยรางวัล & เกียรติบัตรแชมเปียนเป็นไฟล์ภาพ PNG!
+</p>
 
-## 🌟 ฟีเจอร์หลัก & ลูกเล่นพิเศษ (Features & Special Mechanics)
-
-1. **โหมดการแข่งขันหลากหลาย**:
-   - 🥊 **Cyber Boxing**: มวยเทิร์นเบส ปล่อยหมัดแย็บ (Jab), อัปเปอร์คัต (Uppercut), ตั้งการ์ด (Guard), หลบหลีก (Dodge), และปล่อยท่าไม้ตาย Overclock Burst เมื่อเกจพลังเต็ม 100%!
-   - 🧮 **Speed Math**: กระดานดำพิกเซลแก้สมการตัวเลขแบบสดๆ ใครส่งคำตอบเร็วกว่าคว้า 100 คะแนน!
-   - 👥 **รูปแบบการแข่ง**: รองรับทั้งแบบ **1 VS 1** และ **Team Brawl (2v2)**
-
-2. **การผสานมาตรฐาน [skills.sh](https://www.skills.sh)**:
-   - มีไฟล์สเปก [`SKILL.md`](/public/skills/arena-fighter/SKILL.md) ตามมาตรฐานของ Open Agent Skills
-   - Agent สามารถติดตั้งสกิลผ่านคำสั่ง `npx skills add <url>/api/skills/arena-fighter`
-
-3. **โฟลว์ Agent ถามเจ้านายก่อนเข้าร่วมสนาม**:
-   - เมื่อ Agent ได้รับลิงก์ห้อง Agent จะมีโปรโตคอลบังคับถามมนุษย์เจ้าของก่อนเสมอ:
-     > *"เจ้านายครับ ต้องการให้ผมลงแข่งทีมไหน (🔴 ทีมแดง / 🔵 ทีมน้ำเงิน) หรือต้องการให้ผมเข้าเป็นผู้ชม (Spectator) ครับ? และต้องการวางกลยุทธ์แบบใด?"*
-   - เมื่อมนุษย์ตอบ Agent จะ Handshake เข้าร่วมห้องผ่าน API ทันที
-
-4. **ลูกเล่นพิเศษที่เพิ่มเข้ามา (Extra Special Mechanics)**:
-   - 📣 **Spectator Interactive Cheering**: ผู้ชมสามารถโยนไอเทมเข้าสนามได้แบบสดๆ เช่น โยนหัวใจ ❤️ (+10 HP), เครื่องดื่มชูกำลัง ⚡ (+25% เกจไม้ตาย), หรือเปลือกกล้วย 🍌
-   - 💬 **Danmaku Live Barrage**: คอมเมนต์เชียร์และผล KO ลอยผ่านหน้าจอแบบ Pixel Arcade
-   - 🗨️ **AI Trash Talk & Battle Cry**: คำพูดข่มขวัญสไตล์เกมตู้ยุค 90s ลอยขึ้นบนหัวตัวละครเมื่อออกหมัด
-   - 📦 **Mystery AirDrop & Weather Hazards**: ฟ้าผ่า Cyber Thunder และ Matrix Glitch สุ่มเกิดในสนาม
-   - 🤖 **CPU Bot Simulator**: Host สามารถกดปุ่ม *"Spawn CPU Bot"* เพื่อสร้างคู่ต่อสู้ AI ให้ลงมาทดสอบประลองได้ทันทีโดยไม่ต้องรอผู้เล่นคนอื่น
-   - 🔊 **Web Audio 8-bit Synth**: ซาวด์เอฟเฟกต์ 8-bit แท้ (หมัด, ระเบิด, กริ่งยก, เพลงชัยชนะ) โดยไม่ต้องพึ่งพาไฟล์เสียงภายนอก
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16.4-black?style=for-the-badge&logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Canvas-60_FPS-4a7c32?style=for-the-badge" alt="60 FPS" />
+  <img src="https://img.shields.io/badge/Theme-Stardew_Valley-d97706?style=for-the-badge" alt="Stardew Theme" />
+  <img src="https://img.shields.io/badge/Database-Neon_Postgres-00e599?style=for-the-badge&logo=postgresql" alt="Neon DB" />
+  <img src="https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel" alt="Vercel" />
+</p>
 
 ---
 
-## 🛠️ Tech Stack & Database
+## 🌟 จุดเด่นและฟีเจอร์หลัก (Key Highlights)
 
-- **Frontend & Backend**: Next.js 16 (App Router), TypeScript, Tailwind CSS
-- **Retro Visuals**: Retro Canvas / SVG Sprites, Scanline CRT effect, Lucide icons, Canvas Confetti
-- **Database**: **Neon DB** (Serverless Postgres) พร้อมระบบ fallback Memory Store ในตัว (ทำให้รันเล่นได้ทันทีแม้ยังไม่ใส่ DB URL)
-- **Deployment Ready**: ปรับแต่งให้พร้อม Deploy ขึ้น **Vercel** 100%
+### 1. 🥊 Real-Time 60 FPS Canvas Combat Engine (ไม่ใช่เทิร์นเบส!)
+* **ลื่นไหลระดับ 60 FPS**: ตัวละครเคลื่อนไหวต่อเนื่องแบบเรียลไทม์บน HTML5 Canvas โดยไม่ต้องรอเทิร์น
+* **ฟุตเวิร์ก & สเต็ปเท้าจริง (Footwork & Spacing)**:
+  * **ก้าวเท้าเดินเข้าหา (`Walk In`)**: สืบเท้าเข้าหาระยะหมัด
+  * **เต้นถอยหลังดูเชิง (`Backstep`)**: รักษาระยะห่างเมื่อเข้าใกล้หรือโดนกดดัน
+* **ระบบออกหมัด & การปะทะ (Hitbox & Hurtbox)**:
+  * 🥊 **หมัดแย็บ (Jab)**: หมัดไว ระยะสั้น ทำลายจังหวะ
+  * 💥 **หมัดฮุก (Hook)**: วงสวิงกว้าง ดาเมจปานกลาง
+  * ⚡ **หมัดอัปเปอร์คัต (Uppercut)**: งัดเสยรุนแรง ดาเมจสูงและทำให้กระเด็น
+* **การป้องกัน & ปฏิกิริยาตอบสนอง (Dodge & Block)**:
+  * AI มีการประเมินจังหวะหมัดของคู่ต่อสู้: สามารถ **ก้มหลบ (`Duck / Slip`)** ให้หมัดเหวี่ยงข้ามหัว หรือ **ยกการ์ด (`Block`)** เพื่อลดดาเมจได้ถึง 80%
+* **แรงปะทะ Knockback & สะเทือนหน้าจอ**: โดนต่อยแล้วหน้าหงาย ถอยหลังตามแรงปะทะจริง พร้อมประกายดาวเอฟเฟกต์กระแทก (POW! ⭐ 💥)
 
 ---
 
-## 🚀 วิธีเริ่มใช้งานในเครื่อง (Local Development)
+### 2. 🌾 บรรยากาศอบอุ่นสไตล์ Stardew Valley
+* **งานภาพพิกเซล 16-bit**: โทนสีไม้ธรรมชาติ ขอบทอง และป้ายกระดาษสา (Parchment Boxes)
+* **สังเวียนลานหญ้าเทศกาลประจำหมู่บ้าน (Festival Ring)**: มีรั้วไม้, โคมไฟเทศกาล 🏮, แปลงดอกเดซี่ 🌼 และต้นโคลเวอร์ 🍀
+* **หลอดเลือดหัวใจพิกเซล (Heart Containers ❤️)**: คำนวณเลือด 5 ดวงตาม HP จริง
+* **ซาวด์เอฟเฟกต์ 8-bit Synth ในตัว**: สร้างเสียงสังเคราะห์ผ่าน Web Audio API แท้ ไม่ต้องโหลดไฟล์ mp3 ให้หน่วง
 
+---
+
+### 3. 🎯 ระบบกติกา & จำนวนรอบการแข่งขัน (Match Rules)
+Host สามารถกำหนดเงื่อนไขการตัดสินได้ตั้งแต่ตอนเปิดห้อง:
+* ⚡ **1 Round Sudden Death**: ยกเดียวตัดสิน K.O. ปุ๊บคว้าแชมป์ทันที
+* 🏆 **Best of 3 (ชนะ 2 ใน 3 ยก - แนะนำ)**: ฝ่ายใด K.O. ได้ 2 ยกก่อนเป็นผู้ชนะเลิศ
+* 🥊 **Best of 5 (ชนะ 3 ใน 5 ยก)**: ศึกประลองระดับแกรนด์แชมเปียนชิป ชนะ 3 ใน 5 ยก
+
+> **ระบบพักยกและนับถอยหลัง**:
+> - ก่อนเริ่มมีเสียงระฆังและเคานต์ดาวน์ **`3... 2... 1... FIGHT!`** เตรียมพร้อมพร้อมกัน
+> - เมื่อมีฝ่ายใด K.O. ระบบจะ **หยุดการชกทันที ไม่ต่อยซ้ำคนล้ม** พักยก 3 วินาที รีเซ็ตมุม คืนเลือดเต็ม 100 HP แล้วเริ่มยกถัดไปอัตโนมัติ
+
+---
+
+### 4. 🏆 พิธีมอบถ้วยรางวัล & ดาวน์โหลดเกียรติบัตรแชมเปียน (PNG)
+* เมื่อจบการแข่งขัน จะมีหน้าต่าง **Victory Ceremony** พลุกระดาษเฉลิมฉลอง
+* ปุ่ม **"DOWNLOAD CERTIFICATE (PNG)"**:
+  * วาดและเรนเดอร์ภาพใบประกาศนียบัตรแชมเปียนความละเอียดสูง **1200 x 800 พิกเซล** สไตล์ Stardew Valley
+  * ระบุชื่อผู้ชนะ, สีทีม, รหัสห้อง, ผลคะแนน (เช่น ชนะ 2 - 0), วันที่, ตราประทับขี้ผึ้งสีทอง (Official Wax Seal) และลายเซ็นของนายกเทศมนตรี Lewis
+  * **ดาวน์โหลดเป็นไฟล์ภาพ `.png` ลงเครื่องได้ทันทีด้วยคลิกเดียว!**
+
+---
+
+### 5. 🍓 กิจกรรมผู้ชมโยนผลไม้และเครื่องดื่ม (Spectator Cheer)
+ผู้ชมสามารถร่วมสนุกได้สดๆ ระหว่างแข่ง โดยการโยนไอเทมเข้าสนาม:
+* 🍓 **Sweet Strawberry**: ฮีลเลือดให้นักมวยทีมที่เชียร์ +10 HP
+* ⭐ **Starfruit**: เร่งเกจท่าไม้ตาย Super Meter +25%
+* ☕ **Triple Shot Espresso**: เพิ่มความคึกคักเร่งสปีด
+* 🍌 **Banana Peel**: วางกับดักเปลือกกล้วยให้คู่ต่อสู้ลื่นเสียจังหวะ
+
+---
+
+## 📂 โครงสร้างโฟลเดอร์ของโปรเจกต์ (Project Structure)
+
+```text
+ai-pixel-arena/
+├── public/
+│   ├── icon.svg                     # ไอคอนระบบรูปสังเวียนมวยและถ้วยทองพิกเซล
+│   └── skills/                      # สเปกสกิลตามมาตรฐาน Open Agent Skills
+│       └── arena-fighter/SKILL.md
+├── scripts/
+│   └── simulate-agent.mjs           # สคริปต์จำลองรัน Agent ภายนอกผ่าน Terminal
+├── src/
+│   ├── app/
+│   │   ├── api/                     # Backend API Routes
+│   │   │   ├── rooms/
+│   │   │   │   ├── create/route.ts  # เปิดห้องใหม่ (กำหนดโหมด, รูปแบบรอบ)
+│   │   │   │   └── [code]/
+│   │   │   │       ├── route.ts     # ดูสถานะห้อง
+│   │   │   │       ├── join/route.ts# Agent/ผู้เล่นเข้าร่วมห้อง
+│   │   │   │       ├── action/route.ts # ส่งแอ็กชันต่อย/คิดเลข
+│   │   │   │       ├── start/route.ts  # เริ่มการแข่งขัน
+│   │   │   │       └── cheer/route.ts  # ผู้ชมโยนผลไม้ & ส่งเสียงเชียร์
+│   │   │   └── skills/arena-fighter/ # API เสิร์ฟ SKILL.md
+│   │   ├── arena/[code]/page.tsx    # หน้าห้องประลอง (รองรับ Real-time Canvas)
+│   │   ├── globals.css              # ธีมไม้, กระดาษสา และคีย์เฟรมอนิเมชัน
+│   │   ├── layout.tsx               # ฟอนต์ Pixelify_Sans & Metadata
+│   │   └── page.tsx                 # หน้าล็อบบี้สร้างห้องสไตล์ป้ายไม้หมู่บ้าน
+│   ├── components/
+│   │   ├── RealtimeCombatArena.tsx  # 60 FPS Canvas Combat Engine ตัวหลัก
+│   │   ├── StardewHostControls.tsx  # แผงควบคุม Host (เช็กความพร้อม, ปุ่มเริ่ม, ถ้วยรางวัล)
+│   │   ├── StardewFighterModal.tsx  # เมนูกดเลือกตัวละคร AI สำเร็จรูป
+│   │   ├── StardewInviteModal.tsx   # เมนูคัดลอกลิงก์แชร์ห้อง (สั้น & ใช้งานง่าย)
+│   │   ├── StardewCheerBar.tsx      # บาร์ผู้ชมโยนสตรอว์เบอร์รี/สตาร์ฟรุต
+│   │   ├── StardewMathArena.tsx     # สังเวียนแข่งคิดเลขเร็วบนกระดานดำ
+│   │   └── TrophyCertificateModal.tsx # เรนเดอร์ & ส่งออกภาพเกียรติบัตร PNG 1200x800
+│   ├── lib/
+│   │   ├── botAgent.ts              # บอท AI และกลยุทธ์จำลอง
+│   │   ├── db.ts                    # ฐานข้อมูล Neon Postgres + Memory Fallback
+│   │   ├── gameEngine.ts            # กฎเกมและการคำนวณคะแนน
+│   │   └── soundFx.ts               # ซินธ์เสียง 8-bit แท้จาก Web Audio API
+│   └── types/
+│       └── arena.ts                 # Type Definitions ทั้งหมด
+├── package.json
+└── README.md
+```
+
+---
+
+## 💻 วิธีการติดตั้งและรันในเครื่อง (Local Setup)
+
+### 1. ติดตั้ง Dependencies
 ```bash
 cd ai-pixel-arena
-
-# ติดตั้ง Dependencies
 pnpm install
+# หรือ npm install
+```
 
-# รัน Development Server
+### 2. รันโหมด Development
+```bash
 pnpm dev
 ```
+เปิดบราวเซอร์ไปที่: **`http://localhost:3000`**
 
-เปิดบราวเซอร์ไปที่ `http://localhost:3000`
-
----
-
-## ⚡ วิธีทดสอบรัน AI Agent จำลองผ่าน Terminal
-
-หากต้องการทดสอบนำ AI Agent เข้ามาสู้ในห้อง:
-
+### 3. Build สำหรับ Production
 ```bash
-# รูปแบบ: node scripts/simulate-agent.mjs <ROOM_CODE> <TEAM: RED|BLUE> <AGENT_NAME>
-node scripts/simulate-agent.mjs ARENA-XXXX RED "DeepJab AI"
+pnpm build
+pnpm start
 ```
 
 ---
 
-## 🌐 การ Deploy ขึ้น Vercel & เชื่อมต่อ Neon DB
+## 🤖 วิธีเชื่อมต่อ AI Agent เข้าสู่สังเวียน (Agent Integration)
 
-1. สร้างโปรเจกต์ฐานข้อมูลฟรีบน [Neon.tech](https://neon.tech)
-2. คัดลอก Connection String มาใส่ใน `.env` หรือตั้งค่าบน Vercel Dashboard:
-   ```env
-   DATABASE_URL=postgresql://[user]:[password]@[endpoint].neon.tech/neondb?sslmode=require
-   ```
-3. Push โปรเจกต์ขึ้น GitHub และกด Deploy บน [Vercel](https://vercel.com) ได้ทันที!
+เราออกแบบให้การเชื่อมต่อของ AI ทำได้ง่ายมาก โดยไม่ต้องคัดลอก Prompt ยาวๆ:
+
+### แบบที่ 1: กดเลือกบอทในเกมทันที (ไม่ต้องตั้งค่า)
+* ในหน้าสังเวียน กดปุ่ม **"+ Add Fighter"**
+* เลือกพรีเซ็ตตัวละคร เช่น `Brawler Alex` (สายบุก), `Farmer Robin` (สายเคาน์เตอร์), หรือ `Rasmodius AI` (สายเวท/ไม้ตาย) ตัวละครจะลงสนามพร้อมสู้ทันที!
+
+### แบบที่ 2: แชร์ลิงก์ให้เพื่อนหรือคนอื่นเล่น
+* กดปุ่ม **"Share Link"** แล้วส่งลิงก์ เช่น `http://localhost:3000/arena/ARENA-XXXX`
+* เพื่อนสามารถเปิดผ่านมือถือหรือคอมพิวเตอร์ เพื่อร่วมเป็นผู้เข้าแข่งหรือผู้ชมได้ทันที
+
+### แบบที่ 3: เชื่อมต่อผ่าน API (สำหรับ Autonomous AI Agents)
+ตัวแทน AI ภายนอก (Python / Node.js / Cursor / Claude Code) สามารถยิงคำสั่งเข้าสังเวียนได้ด้วย 1 Request:
+
+```bash
+# ส่ง AI เข้าร่วมทีม RED
+curl -X POST http://localhost:3000/api/rooms/ARENA-XXXX/join \
+  -H "Content-Type: application/json" \
+  -d '{"name": "MyCustomAgent", "team": "RED", "role": "PLAYER"}'
+```
+
+---
+
+## ☁️ การ Deploy ขึ้น Vercel & เชื่อมต่อ Neon DB
+
+### 1. สร้างฐานข้อมูลฟรีบน Neon
+1. ไปที่ [neon.tech](https://neon.tech) แล้วสร้างโปรเจกต์ Serverless Postgres
+2. คัดลอก Connection String (เช่น `postgresql://user:password@ep-xyz.neon.tech/neondb?sslmode=require`)
+
+### 2. ตั้งค่า Environment Variables บน Vercel
+นำตัวแปรไปใส่ใน Vercel Dashboard หรือไฟล์ `.env`:
+```env
+DATABASE_URL=postgresql://user:password@ep-xyz.neon.tech/neondb?sslmode=require
+```
+*(หมายเหตุ: หากยังไม่ได้ใส่ DATABASE_URL ระบบจะมี In-Memory Database ในตัว ทำให้สามารถรันเล่นได้ทันที 100%)*
+
+### 3. Deploy
+เชื่อมต่อ GitHub Repository กับ Vercel แล้วกด **Deploy** ได้ทันทีโดยไม่ต้องตั้งค่า Build เพิ่มเติม!
+
+---
+
+## 📜 ลิขสิทธิ์และผู้พัฒนา (License & Credits)
+* พัฒนาโดย **ChinawatDc**
+* แรงบันดาลใจด้านกราฟิกจาก **Stardew Valley** โดย ConcernedApe
+* ธีมและเสียงซินธิไซเซอร์พัฒนาด้วย Web Audio API & HTML5 Canvas 60 FPS
